@@ -6,7 +6,7 @@
 /*   By: felsanch <felsanch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/28 18:45:00 by felsanch          #+#    #+#             */
-/*   Updated: 2023/07/01 11:23:30 by felsanch         ###   ########.fr       */
+/*   Updated: 2023/07/01 13:31:39 by felsanch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,18 +17,33 @@ int	ft_putchar(char c)
 	write(1,&c, 1);
 	return (0);
 }
-
-int	ft_filter(char const str, va_list args)
+/*
+int ft_putstr(char	*str)
 {
-	if (str == 'c')
+	int i;
+	int tam;
+
+	i = 0;
+	tam = sizeof(str);
+	while ()
+}
+*/
+int	ft_filter(char const letra, va_list args)
+{
+	if (letra == 'c')
+	{
+		ft_putchar(va_arg(args, int));
+	}
+	else if (letra == 'i' || letra == 'd')
 	{
 		ft_putchar(va_arg(args, int));
 	}
 /*
 	else if (c == 's')
 	{
-		ft_str(va_arg(args, int));
+		ft_putstr(va_arg(args, int));
 	}
+
 	else if (c == 'p')
 
 	else if (c == 'd')
@@ -51,7 +66,7 @@ int	ft_printf(char const *str, ...)
 	int	c; //Recorre el string
 	va_list	args; //Declaracion de variable contiene los argumentos variadicos
 
-	va_start(args, str);
+	va_start(args, str);//Empezamos con las variables de nuestra lista (args) y el argumento que precede a mi lista de argumentos (str)
 	c = 0;
 	while (str[c])
 	{
@@ -71,8 +86,8 @@ int	ft_printf(char const *str, ...)
 int	main(void)
 {
 	/*int a = 'donde';*/
-	printf("donde\n");
-	ft_printf("donde");
+	printf("156\n");
+	ft_printf("156\n");
 	return (0);
 }
 
