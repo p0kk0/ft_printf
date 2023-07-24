@@ -6,7 +6,7 @@
 /*   By: felsanch <felsanch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/28 18:45:00 by felsanch          #+#    #+#             */
-/*   Updated: 2023/07/09 19:38:01 by felsanch         ###   ########.fr       */
+/*   Updated: 2023/07/24 20:26:17 by felsanch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,88 +69,83 @@ int	ft_unsigned(unsigned int num)
 	return (0);
 }
 
-char	*ft_hex(int num)
-{
-	//1º dividimos el numero que entra entre 16 y guardamos el cociente y el resto
-	//2º si el cociente es divisible entre 16, seguimos dividiento
-	int restos;
+// char	*ft_hex(int num)
+// {
+// 	//1º dividimos el numero que entra entre 16 y guardamos el cociente y el resto
+// 	//2º si el cociente es divisible entre 16, seguimos dividiento
+// 	int restos;
 
-	restos = 0;
-	while (num > 15)
-	{
-		num = num % 16;
+// 	restos = 0;
+// 	while (num > 15)
+// 	{
+// 		num = num % 16;
 		 
-	}
+// 	}
 	
-}
+// }
 
 int	ft_filter(char const letra, va_list args)
 {
+	int	len;
+
+	len = 0;
 	if (letra == 'c')
-		ft_putchar(va_arg(args, int));
+		len = len + ft_putchar(va_arg(args, int));
 	if (letra == '%')
-		write(1, &letra, 1);
+		len = len + write(1, &letra, 1);
 	else if (letra == 's')
-		ft_putstr(va_arg(args, char *));
+		len = len + ft_putstr(va_arg(args, char *));
 	else if (letra == 'i' || letra == 'd')
-		ft_putnbr(va_arg(args, int));
+		len = len + ft_putnbr(va_arg(args, int));
 	else if (letra == 'u')
-		ft_unsigned(va_arg(args, unsigned int));
-	else if (letra == 'x')
-		ft_hex(va_arg(args, int));
-	return (0);
+		len = len + ft_unsigned(va_arg(args, unsigned int));
+	// else if (letra == 'x')
+	// 	ft_hex(va_arg(args, int));
+	return (len);
 }
 
 int	ft_printf(char const *str, ...)
 {
-	int		i; //Recorre el total del string
+	int		i; //Recorre toda la entrada. Lo usamos para buscar el inicio de una cadena de formato (%)
+	int		tam; //Guardamos el tamaño de lo que se va a imprimir
 	va_list	args; //Declaracion de variable (args) como tipo va_list, que contiene la información para trabajar con argumentos variádicos
-
+	
 	i = 0;
+	tam = 0;
 	va_start(args, str); //Iniciamos (con la función va_start) nuestra variable (args) en la lista de argumentos (str)
 	while (str[i])
 	{
 		if (str[i] == '%')
 		{
 			i++;
-			ft_filter(str[i], args);
+			tam += ft_filter(str[i], args);
 		}
 		else
 			ft_putchar(str[i]);
 		i++;
 	}
 	va_end(args);
-	return (0);
+	return (tam);
 }
 
 int	main(void)
 {
-	// char a = 'b';
-	// printf("El caracter es %c.\n", a);
-	// ft_printf("El caracter es %c.\n", a);
+	int num = 719;
+	
+	//printf ("%x\n", num);
+	//printf("%% %% .Hey\n");
+	//printf ("%d\n", printf("hola"));
+	//printf ("%d\n", printf("hasta luego"));
+	printf ("%d\n", printf("a"));
+	printf ("%d\n", printf("abcde\n"));
 
-	// char *sentence = "kfdjnv618*14%!";
-	// printf("%s\n", sentence);
-	// ft_printf("%s\n", sentence);
-
-	// int integer = -21474818;
-	// printf("%i\n", integer);
-	// ft_printf("%i\n", integer);
-
-	// float	i = 3.14;
-	// printf("El numero es: %f\n", i);
-	// ft_printf("El numero es: %f\n", i);
-
-	// unsigned int num2 = 423292;
-	// printf("%u\n", num2);
-	// ft_printf("%u\n", num2);
-
-	// printf("%% %% .Hey\n");
-	// ft_printf("%% %% .Hey\n");
+	//ft_printf ("%x\n", num);
+	//ft_printf("%% %% .Hey\n");
+	//ft_printf ("%d\n", ft_printf("hola"));
+	//ft_printf ("%d\n", ft_printf("hasta luego"));
+	ft_printf("%d\n", ft_printf("a"));
+	printf ("%d\n", printf("abcde\n"));
 
 	
-	int	numhex = 719;
-	printf("%x\n", numhex);
-	//ft_printf("%x\n", numhex);
 	return (0);
 }
