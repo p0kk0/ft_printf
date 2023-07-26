@@ -6,89 +6,133 @@
 /*   By: felsanch <felsanch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/28 18:45:00 by felsanch          #+#    #+#             */
-/*   Updated: 2023/07/24 20:26:17 by felsanch         ###   ########.fr       */
+/*   Updated: 2023/07/26 21:11:00 by felsanch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
+//#include <limits.h>
 
 int	ft_putchar(char c)
 {
 	write(1, &c, 1);
-	return (0);
+	return (1);
 }
 
-char	*ft_putstr(char *str)
+int	ft_putstr(char *str)
 {
 	int	i;
 
 	i = 0;
+	if (str == NULL)
+	{
+		write(1, "(null)", 6);
+		return (6);
+	}
 	while (str[i])
 	{
 		ft_putchar(str[i]);
 		i++;
 	}
-	return (0);
+	return (i);
 }
 
-int	ft_putnbr(int n)
+int	ft_putnbr(int n, int *number)
 {
-	if (n == -2147483648)
+	long	nbr;
+
+	nbr = (long)n;
+	if (nbr < 0)
 	{
 		ft_putchar('-');
-		ft_putchar('2');
-		ft_putnbr(147483648);
+		nbr = nbr * (-1);
+		*number += 1;
 	}
-	else if (n < 0)
+	if (nbr > 9)
 	{
-		ft_putchar('-');
-		n = n * (-1);
-		ft_putnbr(n);
-	}
-	else if (n >= 10)
-	{
-		ft_putnbr(n / 10);
-		ft_putnbr(n % 10);
+		ft_putnbr(nbr / 10, number);
+		ft_putnbr(nbr % 10, number);
 	}
 	else
-		ft_putchar(n + '0');
-	return (0);
+	{
+		ft_putchar(nbr + '0');
+		*number += 1;
+	}
+	return (*number);
 }
 
-int	ft_unsigned(unsigned int num)
+int	ft_unsigned(unsigned int num, int *number)
 {
 	if (num > 9)
 	{
-		ft_unsigned(num / 10);
-		ft_unsigned(num % 10);
+		ft_unsigned(num / 10, number);
+		ft_unsigned(num % 10, number);
 	}
 	else
 	{
 		ft_putchar(num + '0');
+		*number += 1;
 	}
-	return (0);
+	return (*number);
 }
 
-// char	*ft_hex(int num)
-// {
-// 	//1º dividimos el numero que entra entre 16 y guardamos el cociente y el resto
-// 	//2º si el cociente es divisible entre 16, seguimos dividiento
-// 	int restos;
+ 	//1º dividimos el numero que entra entre 16 y guardamos el cociente y el resto
+	//2º si el cociente es divisible entre 16, seguimos dividiento
+int	ft_hex(int num, int *number, char const letra)
+{
+	unsigned int	nbr;
+	char			*str;
+	char			*str2;
 
-// 	restos = 0;
-// 	while (num > 15)
-// 	{
-// 		num = num % 16;
-		 
-// 	}
-	
-// }
+	nbr = (unsigned int)num;
+	str = "0123456789abcdef";
+	str2 = "0123456789ABCDEF";
+	if (nbr > 15)
+	{
+		ft_hex(nbr / 16, number, letra);
+		ft_hex(nbr % 16, number, letra);
+	}
+	else
+	{
+		if (letra == 'x')
+			ft_putchar(str[nbr]);
+		else
+			ft_putchar(str2[nbr]);
+		*number += 1;
+	}
+	return (*number);
+}
+
+int	ft_pointer(unsigned long num, int *number)
+{
+	char			*str;
+
+	str = "0123456789abcdef";
+	if (*number == 0)
+	{
+		write(1, "0x", 2);
+		*number = *number + 2;
+	}
+	if (num > 15)
+	{
+		ft_pointer(num / 16, number);
+		ft_pointer(num % 16, number);
+	}
+	else
+	{
+		ft_putchar(str[num]);
+		*number += 1;
+	}	
+	return (*number);
+}
 
 int	ft_filter(char const letra, va_list args)
 {
 	int	len;
+	int	number;
 
 	len = 0;
+	number = 0;
 	if (letra == 'c')
 		len = len + ft_putchar(va_arg(args, int));
 	if (letra == '%')
@@ -96,18 +140,20 @@ int	ft_filter(char const letra, va_list args)
 	else if (letra == 's')
 		len = len + ft_putstr(va_arg(args, char *));
 	else if (letra == 'i' || letra == 'd')
-		len = len + ft_putnbr(va_arg(args, int));
+		len = len + ft_putnbr(va_arg(args, int), &number);
 	else if (letra == 'u')
-		len = len + ft_unsigned(va_arg(args, unsigned int));
-	// else if (letra == 'x')
-	// 	ft_hex(va_arg(args, int));
+		len = len + ft_unsigned(va_arg(args, unsigned int), &number);
+	else if (letra == 'x' || letra == 'X')
+		len = len + ft_hex(va_arg(args, int), &number, letra);
+	else if (letra == 'p')
+		len = len + ft_pointer(va_arg (args, unsigned long), &number);
 	return (len);
 }
 
 int	ft_printf(char const *str, ...)
 {
 	int		i; //Recorre toda la entrada. Lo usamos para buscar el inicio de una cadena de formato (%)
-	int		tam; //Guardamos el tamaño de lo que se va a imprimir
+	int		tam; //Guardamos el número de caracteres que imprimimos, es lo que devuelve la función printf
 	va_list	args; //Declaracion de variable (args) como tipo va_list, que contiene la información para trabajar con argumentos variádicos
 	
 	i = 0;
@@ -121,31 +167,37 @@ int	ft_printf(char const *str, ...)
 			tam += ft_filter(str[i], args);
 		}
 		else
+		{
+			tam++;
 			ft_putchar(str[i]);
+		}
 		i++;
 	}
 	va_end(args);
 	return (tam);
 }
 
-int	main(void)
-{
-	int num = 719;
-	
-	//printf ("%x\n", num);
-	//printf("%% %% .Hey\n");
-	//printf ("%d\n", printf("hola"));
-	//printf ("%d\n", printf("hasta luego"));
-	printf ("%d\n", printf("a"));
-	printf ("%d\n", printf("abcde\n"));
+// int	main(void)
+// {
+// 	//long	num = –2147483647;
+// 	//char *str = "trambolico";
+// 	// char	*str = "Hola me llamo Esteban";
+// 	//printf ("%x\n", num);
+// 	//printf("%% %% .Hey\n");
+// 	//printf ("%d\n", printf("hola"));
+// 	//printf ("%d\n", printf("hasta luego"));
+// 	// printf ("%d\n", printf("a"));
+// 	// printf ("%d\n\n", printf("abcde\n"));
 
-	//ft_printf ("%x\n", num);
-	//ft_printf("%% %% .Hey\n");
-	//ft_printf ("%d\n", ft_printf("hola"));
-	//ft_printf ("%d\n", ft_printf("hasta luego"));
-	ft_printf("%d\n", ft_printf("a"));
-	printf ("%d\n", printf("abcde\n"));
-
+// 	//ft_printf ("%x\n", num);
+// 	//ft_printf("%% %% .Hey\n");
+// 	//ft_printf ("%d\n", ft_printf("hola"));
+// 	//ft_printf ("%d\n", ft_printf("hasta luego"));
+// 	// ft_printf("%d\n", ft_printf("a"));
+// 	// ft_printf ("%d\n", ft_printf("abcde\n"));
 	
-	return (0);
-}
+// 	printf("%d\n", printf("%d\n", INT_MIN));
+
+// 	ft_printf("%d\n", ft_printf("%d\n", INT_MIN));
+// 	return (0);
+// }

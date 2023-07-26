@@ -6,7 +6,7 @@
 /*   By: felsanch <felsanch@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/28 18:55:45 by felsanch          #+#    #+#             */
-/*   Updated: 2023/06/28 19:07:17 by felsanch         ###   ########.fr       */
+/*   Updated: 2023/07/26 20:44:53 by felsanch         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,13 @@
 # include <stdio.h>
 # include <stdarg.h>
 
+int	ft_putchar(char c);
+int	ft_putstr(char *str);
+int	ft_putnbr(int n, int *number);
+int	ft_unsigned(unsigned int num, int *number);
+int	ft_hex(int num, int *number, char const letra);
+int	ft_pointer(unsigned long num, int *number);
+int	ft_filter(char const letra, va_list args);
 int	ft_printf(char const *str, ...);
 
 #endif
