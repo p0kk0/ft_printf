@@ -1,14 +1,4 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    Makefile                                           :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: felsanch <felsanch@student.42.fr>          +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2023/06/28 18:47:02 by felsanch          #+#    #+#              #
-#    Updated: 2023/08/02 17:40:09 by felsanch         ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
+
 
 NAME = libftprintf.a
 
@@ -20,10 +10,10 @@ CFLAGS = -Wall -Werror -Wextra
 
 CC = gcc
 
-all = $(NAME)
+all: $(NAME)
 
 $(NAME): $(OBJ)
-	gcc $(CFLAGS) -c $(SRC)
+	$(CC) $(CFLAGS) -c $(SRC)
 	ar rcs $(NAME) $(OBJ)
 	
 clean:
