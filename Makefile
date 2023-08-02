@@ -6,13 +6,13 @@
 #    By: felsanch <felsanch@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/06/28 18:47:02 by felsanch          #+#    #+#              #
-#    Updated: 2023/07/26 21:10:37 by felsanch         ###   ########.fr        #
+#    Updated: 2023/08/02 17:40:09 by felsanch         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 NAME = libftprintf.a
 
-SRC = ft_printf.c 
+SRC = ft_printf.c ft_putstr.c ft_hex.c ft_putnbr.c 
 
 OBJ = $(SRC:.c=.o)
 
